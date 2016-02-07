@@ -2,7 +2,9 @@ import sqlite3
 import csv
 import os
 import sys
+import time
 
+start = time.clock()
 
 db = sys.argv[1]
 conn = sqlite3.connect(db)
@@ -23,7 +25,7 @@ with open(csvfile, "rb") as f:
     reader = csv.reader(f, delimiter='\t')
 
     header = True
-    for row in reader:
+    for n, row in enumerate(reader):
         rowlen = len(row)
         if header:
             # gather column names from the first row of the csv
@@ -37,20 +39,32 @@ with open(csvfile, "rb") as f:
              #cols = ", ".join(["%s text" % column for column in row])
             sql = "CREATE TABLE {} ({})".format(tablename, cols)
             c.execute(sql)
+            c.execute("PRAGMA synchronous = OFF")
+            c.execute("PRAGMA temp_store = MEMORY")
+            c.execute("PRAGMA cache_size = 2000")
+            c.execute("PRAGMA page_size=32768")
 
             # for column in row:
-            #     if column in ('Fragment_Annotation', 'transition_group_id', 'FullPeptideName', 'ProteinName', 'filename'):
-            #         index = "%s__%s" % ( tablename, column)
-            #         c.execute("CREATE INDEX {} on {} ({})".format(index, tablename, column))
+            #      if column in ('Fragment_Annotation', 'transition_group_id', 'FullPeptideName', 'ProteinName', 'filename'):
+            #          index = "%s__%s" % ( tablename, column)
+            #          c.execute("CREATE INDEX {} on {} ({})".format(index, tablename, column))
 
         else:
-            # skip lines that don't have the right number of columns
-            if len(row) == rowlen:
-                insertsql = "INSERT INTO %s VALUES (%s)" % (tablename,
-                    ", ".join([ "?" for column in row ]))
-                c.execute(insertsql)
+
+             #skip lines that don't have the right number of columns
+             if len(row) == rowlen:
+                 insertsql = "INSERT INTO %s VALUES (%s)" % (tablename,
+                     ", ".join([ "?" for column in row ]))
+                 c.execute(insertsql, row)
+
 
     conn.commit()
  
 c.close()
 conn.close()
+
+end = time.clock()
+n_inserts = n+1
+total_time = end - start
+print("Imported {} records in {} seconds, on average {} inserts per second\n".format(n_inserts,total_time, n/total_time))
+
