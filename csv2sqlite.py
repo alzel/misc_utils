@@ -31,6 +31,11 @@ with open(csvfile, "rb") as f:
             # gather column names from the first row of the csv
             header = False
 
+            #c.execute("PRAGMA synchronous = OFF")
+            #c.execute("PRAGMA temp_store = MEMORY")
+            #c.execute("PRAGMA cache_size = 2000")
+            #c.execute("PRAGMA page_size=32768")
+
             c.execute('DROP TABLE IF EXISTS {}'.format(tablename))
 
             row = [column.replace('/', '_') for column in row]
@@ -39,10 +44,7 @@ with open(csvfile, "rb") as f:
              #cols = ", ".join(["%s text" % column for column in row])
             sql = "CREATE TABLE {} ({})".format(tablename, cols)
             c.execute(sql)
-            c.execute("PRAGMA synchronous = OFF")
-            c.execute("PRAGMA temp_store = MEMORY")
-            c.execute("PRAGMA cache_size = 2000")
-            c.execute("PRAGMA page_size=32768")
+
 
             # for column in row:
             #      if column in ('Fragment_Annotation', 'transition_group_id', 'FullPeptideName', 'ProteinName', 'filename'):
