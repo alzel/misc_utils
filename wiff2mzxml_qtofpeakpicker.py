@@ -57,6 +57,8 @@ for file in matched_files:
         output_file = ".".join([tmp_file, output_format])
         output = os.path.join(output_dir, output_file)
 
+        print "Converting file {0}".format(input_file)
+
         command = ("qtofpeakpicker.exe ",
                   "--resolution=20000 ",
                   "--area=1 ",
