@@ -34,6 +34,7 @@ go_flag = 0
 if re.search(r'^[Ww]+in.*?', platform.system()):
     go_flag = 1
     os.system("SET PATH=%PATH%;C:\Program Files\ProteoWizard\ProteoWizard 3.0.10188")
+    print "Platform {0}".format(platform.system())
 
 matched_files = fnmatch.filter(os.listdir(input_dir), pattern)
 
