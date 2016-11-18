@@ -21,7 +21,7 @@ input_files = args.input
 output_dir = args.output
 output_format = args.format
 
-pattern = "*.wiff"
+pattern = "*.wiff$"
 
 path_split = os.path.split(input_files)
 
@@ -50,7 +50,7 @@ if not os.path.exists(output_dir):
 for file in matched_files:
 
     input_file = os.path.join(input_dir, file)
-    file_re = re.compile(r'(.*).wiff', re.IGNORECASE)
+    file_re = re.compile(r'(.*).wiff$', re.IGNORECASE)
     if file_re.match(file):
         tmp_file = file_re.match(file).group(1)
         output_file = ".".join([tmp_file, output_format])
