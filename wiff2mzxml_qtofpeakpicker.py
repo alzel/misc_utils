@@ -66,7 +66,7 @@ for file in matched_files:
                   "--out  {0}".format(output))
 
         if go_flag == 1:
-            os.system(command)
+            os.system(' '.join(command))
         else:
             print "Do nothing, wrong OS"
             print ' '.join(command)
